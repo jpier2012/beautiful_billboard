@@ -12,6 +12,7 @@ class BeautifulBillboard::CLI
   def call
     # call Scraper to pull data from web pages
     BeautifulBillboard::Scraper.create_stars_from_list
+    BeautifulBillboard::Scraper.create_hits_from_list
     # print welcome message
     start_menu
   end
@@ -24,13 +25,10 @@ class BeautifulBillboard::CLI
 
     get_input
     list_stars(@index)
-
     star_or_detail_menu
-
   end
 
   def star_or_detail_menu
-    #loop this menu
     puts "Would you like to see more stars or a specific star detail?"
     puts "1) More stars!"
     puts "2) A specific star!"
@@ -46,7 +44,7 @@ class BeautifulBillboard::CLI
     when 1
       @index += 20 unless @index >= 99
       list_stars(@index)
-      @index == 99 ? puts "You're seeing all the stars!" : nil
+      puts "You're seeing all the stars!" if @index == 99
       star_or_detail_menu
     when 2
       star_detail_menu
@@ -88,11 +86,25 @@ class BeautifulBillboard::CLI
   def list_stars(index)
     # print out the list of stars up to and including the index
     puts "XXXXXX This is list_stars"
+    BeautifulBillboard::Star.all[0..@index].each do |s|
+      puts "#{s.rank}) #{s.name}"
+    end
   end
 
   def star_details(index)
     # print out the star details for the star listed at rank: index
     puts "XXXXXX This is star_details"
+    s = BeautifulBillboard::Star.all[@index]
+    BeautifulBillboard::Scraper.complete_star_details(s)
+    puts "Rank: #{s.rank}"
+    puts "Name: #{s.name}"
+    puts "Page Link: #{s.page_link}"
+    puts "Last Week: #{s.last_week}"
+    puts "Peak Position: #{s.peak_position}"
+    puts "Weeks on Chart: #{s.weeks_on_chart}"
+    puts "Hot Hits: #{s.hot_hits}"
+    puts "Hit History: #{s.hit_history}"
+    puts "Videos: #{s.videos}"
+    puts "News Stories: #{s.news_stories}"
   end
-
 end

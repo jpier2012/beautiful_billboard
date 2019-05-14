@@ -3,18 +3,18 @@ class BeautifulBillboard::Scraper
     Nokogiri::HTML(open(url))
   end
 
-  def self.get_list(url)
+  def self.get_list_items(url)
     self.get_elements(url).css(".chart-list-item")
   end
 
   # creates an array to pass to the Star class to instantiate each star
   def self.star_list
-    self.get_list('https://www.billboard.com/charts/artist-100')
+    self.get_list_items('https://www.billboard.com/charts/artist-100')
   end
 
   # creates an array to pass to the Hit class to instantiate each hit
   def self.hit_list
-    self.get_list('https://www.billboard.com/charts/hot-100')
+    self.get_list_items('https://www.billboard.com/charts/hot-100')
   end
 
   def self.create_stars_from_list
@@ -26,6 +26,9 @@ class BeautifulBillboard::Scraper
 
   def self.create_hits_from_list
     # feeds hit_list to the Hit class to create hits for each list item
+    self.hit_list.each do |item|
+      BeautifulBillboard::Hit.new_from_hit_list(item)
+    end
   end
 
   def self.create_scrape_objects
@@ -33,13 +36,8 @@ class BeautifulBillboard::Scraper
     self.create_stars_from_list
   end
 
-  def self.artist_page(star)
-    # pulls data from the link associated to each artist in the artist 100 list
-    self.get_elements("https://www.billboard.com#{star.page_link}")
-  end
-
-  def self.scrape_star_details(star)
-    # artist_page(star)
+  def self.complete_star_details(star)
+    star.complete_details(self.get_elements("https://www.billboard.com#{star.page_link}"))
   end
 
 end
