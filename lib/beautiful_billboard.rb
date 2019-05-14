@@ -1,8 +1,8 @@
 module BeautifulBillboard
 end
 
-#require 'colorize'
-#require 'tty-table'
+require 'colorize'
+require 'tty-table'
 require 'nokogiri'
 require 'open-uri'
 require 'pry'

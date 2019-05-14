@@ -2,7 +2,7 @@ class BeautifulBillboard::Star
   @@all = []
 
   attr_accessor :rank, :name, :page_link, :last_week, :peak_position, :weeks_on_chart
-  attr_reader :hot_hits, :hit_history, :videos, :news_stories
+  attr_reader :hot_hits, :hit_history, :videos, :articles
 
   # I keep these optional in case the data is missing from the artist 100 list
   def initialize(page_link = nil, last_week = nil, peak_position = nil, weeks_on_chart = nil)
@@ -12,7 +12,8 @@ class BeautifulBillboard::Star
     @weeks_on_chart = weeks_on_chart
     @hot_hits = []
     @hit_history = []
-    @news_stories = []
+    @videos = []
+    @articles = []
     @@all << self
   end
 
@@ -44,8 +45,8 @@ class BeautifulBillboard::Star
     !check.empty? ? star.weeks_on_chart = check[0].text : nil
   end
 
+  # shows the hits currently on the hot 100 list
   def get_hot_hits
-    # shows the hits currently on the hot 100 list
     @hot_hits = BeautifulBillboard::Hit.all.select { |h| h.recorded_by.include?("#{self.name}") }
   end
 
@@ -56,17 +57,21 @@ class BeautifulBillboard::Star
     end
   end
 
-  def get_news_stories(star_page_elements)
-    # pulls the list of news stories from the artist detail page
-    star_page_elements.css("li[class*='artist-section']").each do |story|
-    #binding.pry
-      @news_stories << "#{story.text.strip}\n- #{story.css("a")[0]["href"].strip}"
+  # pulls the list of links from the artist detail page,
+  # qualifies it as a "video" or "news story" based on the
+  def get_links(star_page_elements)
+    star_page_elements.css("li[class*='artist-section']").each do |link|
+      if link.css("a")[0]["href"].include?('video')
+        @videos << "#{link.text.strip}\n#{link.css("a")[0]["href"].strip}"
+      elsif link.css("a")[0]["href"].include?('articles')
+        @articles << "#{link.text.strip}\n#{link.css("a")[0]["href"].strip}"
+      end
     end
   end
 
   def complete_details(star_page_elements)
-    self.get_hot_hits
-    self.get_hit_history(star_page_elements)
-    self.get_news_stories(star_page_elements)
+    get_hot_hits
+    get_hit_history(star_page_elements)
+    get_links(star_page_elements)
   end
 end
