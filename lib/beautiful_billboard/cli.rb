@@ -2,7 +2,7 @@ class BeautifulBillboard::CLI
 
   def initialize
     @input = ""
-    @index = 19
+    @star_index = 19
   end
 
   def get_input
@@ -30,23 +30,21 @@ class BeautifulBillboard::CLI
   def call
     BeautifulBillboard::Scraper.create_objects
     intro
-    puts "~~~~~~~~~~ Your one-stop-shop for popular music! ~~~~~~~~~~~~~~".light_yellow
-    puts "~~~~~~~~~~~ Press enter to see the top 20 stars ~~~~~~~~~~~~~~~".light_white
+    puts "~~~~~~~~~~ Your one-stop-shop for popular music! ~~~~~~~~~~~~~~".yellow
+    puts "~~~~~~~~~~~ Press enter to see the top 20 stars ~~~~~~~~~~~~~~~".white
     get_input
 
-    list_stars(@index)
+    list_stars(@star_index)
     start_menu
   end
 
   def start_menu
-    puts "================================================================".light_yellow.bold
-    puts <<-M.gsub(/^\s*/, '').gsub(/\s*$/, '').cyan
-    Would you like to see more stars or a specific star detail?
-    1) More stars!
-    2) A specific star!
-    0) Exit
-    M
-    puts "================================================================".light_yellow.bold
+    puts "================================================================".yellow.bold
+    puts "Would you like to see more stars or a specific star detail?".blue.bold
+    puts "1) More stars!".blue
+    puts "2) A specific star!".blue
+    puts "0) Exit".blue
+    puts "================================================================".yellow.bold
     get_input
 
     case @input
@@ -54,63 +52,45 @@ class BeautifulBillboard::CLI
       puts "Goodbye!"
       exit
     when 1
-      @index += 20 unless @index >= 99
-      list_stars(@index)
-      puts "You're seeing all the stars!".light_red.bold if @index == 99
+      @star_index += 20 unless @star_index >= 99
+      list_stars(@star_index)
+      puts "There are no more stars!".red.bold if @star_index == 99
       start_menu
     when 2
       star_detail_menu
     else
-      puts "Sorry, I didn't catch that - ".light_red.bold
+      puts "Sorry, I didn't catch that - ".red.bold
       start_menu
     end
   end
 
   def star_detail_menu
     puts "================================================================".yellow.bold
-    puts "Please enter the number of the star you'd like to see.".cyan
+    puts "Please enter the number of the star you'd like to see.".cyan.bold
     puts "================================================================".yellow.bold
     get_input
 
-    if @input <= 0 || @input >= 99
-      puts "Please enter a valid number next time!".light_red.bold
+    if @input == 0
+      puts "Goodbye!"
+      exit
+    elsif @input <= 0 || @input > 100
+      puts "It needs to be between 1 and 100!".red.bold
       star_detail_menu
     end
 
     star_details(@input - 1)
-    star_detail_or_list_menu
-  end
-
-  def star_detail_or_list_menu
-    puts "================================================================".yellow.bold
-    puts <<-M.gsub(/^\s*/, '').gsub(/\s*$/, '').cyan
-    Would you like to see another star or go back to the list view?
-    1) Another star!
-    2) The list view!
-    0) Exit
-    M
-    puts "================================================================".yellow.bold
+    puts "Hit any key to return to the star list."
     get_input
-
-    case @input
-    when 0
-      puts "Goodbye!"
-      exit
-    when 1
-      star_detail_menu
-    when 2
-      list_stars(@index)
-      start_menu
-    else
-      puts "Sorry, I didn't catch that - "
-      star_detail_or_list_menu
-    end
+    list_stars(@star_index)
+    start_menu
   end
 
   # print out the list of stars up to and including the index
   def list_stars(index)
-    BeautifulBillboard::Star.all[0..index].each do |s|
-      puts "#{s.rank}) #{s.name} / #{s.page_link}"
+    BeautifulBillboard::Star.all[0..index].each_with_index do |s, i|
+      str = "#{s.rank}) #{s.name}"
+      puts str.blue if i.odd?
+      puts str.green if i.even?
     end
   end
 
@@ -118,38 +98,33 @@ class BeautifulBillboard::CLI
   def star_details(index)
     s = BeautifulBillboard::Star.all[index]
     BeautifulBillboard::Scraper.complete_star_details(s)
-    puts "----------------------------------------------------------------".light_white.bold
-    puts <<-M.gsub(/^\s*/, '').gsub(/\s*$/, '').cyan
-    puts "Rank:               #{s.rank}"
-    puts "Name:               #{s.name}"
-    puts "Page Link:          #{s.page_link}"
-    puts "Last Week:          #{s.last_week}"
-    puts "Peak Position:      #{s.peak_position}"
-    puts "Weeks on Chart:     #{s.weeks_on_chart}"
-    M
-    puts "----------------------------------------------------------------".light_white.bold
-    puts "Hot Hits: #{s.hot_hits.count} total".
-    print_hot_hits(s)
-    puts "Hit History: #{s.hit_history.count} total"
+    puts "----------------------------------------------------------------".blue.bold
+    puts "Rank:               #{s.rank}".cyan
+    puts "Name:               #{s.name}".cyan
+    puts "Page Link:          https://www.billboard.com#{s.page_link}".cyan
+    puts "Last Week:          #{s.last_week}".cyan
+    puts "Peak Position:      #{s.peak_position}".cyan
+    puts "Weeks on Chart:     #{s.weeks_on_chart}".cyan
+    puts "----------------------------------------------------------------".blue.bold
+    puts "Hot Hits: #{s.hot_hits.count} total".yellow
+    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
+    print_list(s.hot_hits)
+    puts "Hit History: #{s.hit_history.count} total".yellow
+    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
     print_list(s.hit_history)
-    puts "Videos: #{s.videos.count} total"
+    puts "Videos: #{s.videos.count} total".yellow
+    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
     print_list(s.videos)
-    puts "News Stories: #{s.articles.count} total"
+    puts "Articles: #{s.articles.count} total".yellow
+    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
     print_list(s.articles)
-  end
-
-  def print_hot_hits(star)
-    i = 1
-    star.hot_hits.each do |hit|
-      puts "  #{i}) #{hit.title} - #{hit.recorded_by} / Current Rank: #{hit.rank}"
-      i += 1
-    end
   end
 
   def print_list(list)
     i = 1
     list.each do |line|
-      puts "  #{i}) #{line}"
+      puts "  #{i}) #{line}".cyan
+      puts "~~~".blue
       i += 1
     end
   end

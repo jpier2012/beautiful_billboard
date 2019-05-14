@@ -12,8 +12,8 @@ class BeautifulBillboard::Star
     @weeks_on_chart = weeks_on_chart
     @hot_hits = []
     @hit_history = []
-    @videos = []
     @articles = []
+    @videos = []
     @@all << self
   end
 
@@ -47,13 +47,15 @@ class BeautifulBillboard::Star
 
   # shows the hits currently on the hot 100 list
   def get_hot_hits
-    @hot_hits = BeautifulBillboard::Hit.all.select { |h| h.recorded_by.include?("#{self.name}") }
+    BeautifulBillboard::Hit.all.each do |h|
+      @hot_hits << "#{h.title} / Current Rank: #{h.rank}" if h.recorded_by.include?("#{self.name}")
+    end
   end
 
   def get_hit_history(star_page_elements)
     # pulls the list of past chart-topping hits from the artist detail page
     star_page_elements.css(".artist-section--chart-history__title-list__title").each do |item|
-      @hit_history << "#{item["data-title"]} - #{item.css("[class*='peak-rank']")[0].text.strip}"
+      @hit_history << "#{item["data-title"]} / #{item.css("[class*='peak-rank']")[0].text.strip}"
     end
   end
 
