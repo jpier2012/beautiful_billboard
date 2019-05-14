@@ -1,8 +1,10 @@
 # BeautifulBillboard
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/beautiful_billboard`. To experiment with that code, run `bin/console` for an interactive prompt.
+Welcome to the Beautiful Billboard CLI! This is my first project as a Flatiron school student.
 
-TODO: Delete this and the text above, and describe your gem
+This program pulls information from the Billboard Artist 100 list in the form of 'Star' objects  (https://www.billboard.com/charts/artist-100) and from the Hot 100 list in the form of 'Hit' objects  (https://www.billboard.com/charts/hot-100). You'll be able to see a list of stars in a compact, organized, and colorful format, with detailed information on each star available on demand. This includes a measure of how many hits each star has currently on the Hot 100 chart.
+
+Music has never looked better!
 
 ## Installation
 
@@ -22,7 +24,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Type './bin/beautiful_billboard' into the terminal to run.
+
+Follow the prompts and have a great time!
 
 ## Development
 
