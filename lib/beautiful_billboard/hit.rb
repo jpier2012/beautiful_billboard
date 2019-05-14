@@ -1,0 +1,3 @@
+class BeautifulBillboard::Hit
+
+end
