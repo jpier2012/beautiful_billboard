@@ -12,8 +12,7 @@ class BeautifulBillboard::Star
     @weeks_on_chart = weeks_on_chart
     @hot_hits = []
     @hit_history = []
-    @videos = []
-    @news_stores = []
+    @news_stories = []
     @@all << self
   end
 
@@ -28,7 +27,10 @@ class BeautifulBillboard::Star
       s.name = item["data-title"]
     end
 
-    # these below are optional attributes, not every artist in the artist 100 list has these attributes present
+    # For these, the data container may not exist on the page so the .css selector may return a blank array,
+    # which then gives a noMethodError for the .text method called on it.
+    # Assigning attributes using ||= will not work because of this error.
+
     check = item.css("[class*='title-text'] a")
     !check.empty? ? star.page_link = check[0]["href"] : nil
 
@@ -44,7 +46,7 @@ class BeautifulBillboard::Star
 
   def get_hot_hits
     # shows the hits currently on the hot 100 list
-    @hot_hits = self.class.all.select { |h| h.recorded_by.include?("#{self.name}")}
+    @hot_hits = BeautifulBillboard::Hit.all.select { |h| h.recorded_by.include?("#{self.name}") }
   end
 
   def get_hit_history(star_page_elements)
@@ -54,19 +56,17 @@ class BeautifulBillboard::Star
     end
   end
 
-  def get_videos(star_page_elements)
-    # pulls the list of video links from the artist detail page
-  end
-
   def get_news_stories(star_page_elements)
     # pulls the list of news stories from the artist detail page
+    star_page_elements.css("li[class*='artist-section']").each do |story|
+    #binding.pry
+      @news_stories << "#{story.text.strip}\n- #{story.css("a")[0]["href"].strip}"
+    end
   end
 
   def complete_details(star_page_elements)
     self.get_hot_hits
     self.get_hit_history(star_page_elements)
-    self.get_videos(star_page_elements)
-    self.get_hit_history(star_page_elements)
+    self.get_news_stories(star_page_elements)
   end
-
 end

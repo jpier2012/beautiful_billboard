@@ -31,7 +31,7 @@ class BeautifulBillboard::Scraper
     end
   end
 
-  def self.create_scrape_objects
+  def self.create_objects
     self.create_hits_from_list
     self.create_stars_from_list
   end

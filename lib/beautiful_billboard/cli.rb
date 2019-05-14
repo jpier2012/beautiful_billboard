@@ -10,19 +10,9 @@ class BeautifulBillboard::CLI
   end
 
   def call
-    # call Scraper to pull data from web pages
-    BeautifulBillboard::Scraper.create_stars_from_list
-    BeautifulBillboard::Scraper.create_hits_from_list
-    # print welcome message
-    start_menu
-  end
-
-  def start_menu
-    #provides the basis of the menu
+    BeautifulBillboard::Scraper.create_objects
     puts "Welcome to the Beautiful Billboard CLI!"
     puts "Press enter to see the top 20 stars"
-    puts "Type 0 (Zero) at anytime to exit"
-
     get_input
     list_stars(@index)
     star_or_detail_menu
@@ -58,7 +48,7 @@ class BeautifulBillboard::CLI
     # loop this menu
     puts "Please enter the number of the star you'd like to see"
     get_input
-    star_details(@index)
+    star_details(@input - 1)
     star_detail_or_list_menu
   end
 
@@ -85,26 +75,50 @@ class BeautifulBillboard::CLI
 
   def list_stars(index)
     # print out the list of stars up to and including the index
-    puts "XXXXXX This is list_stars"
-    BeautifulBillboard::Star.all[0..@index].each do |s|
-      puts "#{s.rank}) #{s.name}"
+    BeautifulBillboard::Star.all[0..index].each do |s|
+      puts "#{s.rank}) #{s.name} / #{s.page_link}"
     end
   end
 
   def star_details(index)
     # print out the star details for the star listed at rank: index
-    puts "XXXXXX This is star_details"
-    s = BeautifulBillboard::Star.all[@index]
+    s = BeautifulBillboard::Star.all[index]
     BeautifulBillboard::Scraper.complete_star_details(s)
-    puts "Rank: #{s.rank}"
-    puts "Name: #{s.name}"
-    puts "Page Link: #{s.page_link}"
-    puts "Last Week: #{s.last_week}"
-    puts "Peak Position: #{s.peak_position}"
-    puts "Weeks on Chart: #{s.weeks_on_chart}"
-    puts "Hot Hits: #{s.hot_hits}"
-    puts "Hit History: #{s.hit_history}"
-    puts "Videos: #{s.videos}"
-    puts "News Stories: #{s.news_stories}"
+    puts "Rank:               #{s.rank}"
+    puts "Name:               #{s.name}"
+    puts "Page Link:          #{s.page_link}"
+    puts "Last Week:          #{s.last_week}"
+    puts "Peak Position:      #{s.peak_position}"
+    puts "Weeks on Chart:     #{s.weeks_on_chart}"
+    print_hot_hits(s)
+    print_hit_history(s)
+    print_news_stories(s)
+  end
+
+  def print_hot_hits(star)
+    i = 1
+    puts "Hot Hits: #{star.hot_hits.count} total"
+    star.hot_hits.each do |hit|
+      puts "#{i}) #{hit.title} - #{hit.recorded_by} / Current Rank: #{hit.rank}"
+      i += 1
+    end
+  end
+
+  def print_hit_history(star)
+    i = 1
+    puts "Hit History: #{star.hit_history.count} total"
+    star.hit_history.each do |hit|
+      puts "#{i}) #{hit}"
+      i += 1
+    end
+  end
+
+  def print_news_stories(star)
+    i = 1
+    puts "News Stories: #{star.news_stories.count} total"
+    star.news_stories.each do |story|
+      puts "#{i}) #{story}"
+      i += 1
+    end
   end
 end
