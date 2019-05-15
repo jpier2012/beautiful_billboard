@@ -4,16 +4,13 @@ class BeautifulBillboard::Star
   attr_accessor :rank, :name, :page_link, :last_week, :peak_position, :weeks_on_chart
   attr_reader :hot_hits, :hit_history, :videos, :articles
 
-  # I keep these optional in case the data is missing from the artist 100 list
-  def initialize(page_link = nil, last_week = nil, peak_position = nil, weeks_on_chart = nil)
-    @page_link = page_link
-    @last_week = last_week
-    @peak_position = peak_position
-    @weeks_on_chart = weeks_on_chart
+  # attribute default values are not necessary because I set them through new.tap in self.new_from_star_list
+  def initialize
     @hot_hits = []
     @hit_history = []
     @articles = []
     @videos = []
+    @updated = false
     @@all << self
   end
 
@@ -21,28 +18,31 @@ class BeautifulBillboard::Star
     @@all
   end
 
+  # creates new Star objects from the list items generated through the scraper
   def self.new_from_star_list(item)
-    # creates new Star objects from the list generated through the scraper
-    star = self.new.tap do |s|
+    self.new.tap do |s|
       s.rank = item["data-rank"]
       s.name = item["data-title"]
+
+      # For these, the data container may not exist on the main list page so the .css selector may return a blank array,
+      # which then gives a noMethodError for the .text method called on it.
+      # Assigning attributes using ||= will not work because of this error.
+      # The below functions check to see if the .css selector array is empty.
+      # If it is not empty, set the attribute to the text of that selector's first element,
+      # otherwise set the attribute to nil.
+
+      arr = item.css("[class*='title-text'] a")
+      !arr.empty? ? s.page_link = arr[0]["href"] : s.page_link = nil
+
+      arr = item.css("[class*='last-week']")
+      !arr.empty? ? s.last_week = arr[0].text : s.last_week = nil
+
+      arr = item.css("[class*='weeks-at-one']")
+      !arr.empty? ? s.peak_position = arr[0].text : s.peak_position = nil
+
+      arr = item.css("[class*='weeks-on-chart']")
+      !arr.empty? ? s.weeks_on_chart = arr[0].text : s.weeks_on_chart = nil
     end
-
-    # For these, the data container may not exist on the page so the .css selector may return a blank array,
-    # which then gives a noMethodError for the .text method called on it.
-    # Assigning attributes using ||= will not work because of this error.
-
-    check = item.css("[class*='title-text'] a")
-    !check.empty? ? star.page_link = check[0]["href"] : nil
-
-    check = item.css("[class*='last-week']")
-    !check.empty? ? star.last_week = check[0].text : nil
-
-    check = item.css("[class*='weeks-at-one']")
-    !check.empty? ? star.peak_position = check[0].text : nil
-
-    check = item.css("[class*='weeks-on-chart']")
-    !check.empty? ? star.weeks_on_chart = check[0].text : nil
   end
 
   # shows the hits currently on the hot 100 list
@@ -52,15 +52,15 @@ class BeautifulBillboard::Star
     end
   end
 
+  # pulls the list of past chart-topping hits from the artist detail page
   def get_hit_history(star_page_elements)
-    # pulls the list of past chart-topping hits from the artist detail page
     star_page_elements.css(".artist-section--chart-history__title-list__title").each do |item|
       @hit_history << "#{item["data-title"]} / #{item.css("[class*='peak-rank']")[0].text.strip}"
     end
   end
 
   # pulls the list of links from the artist detail page,
-  # qualifies it as a "video" or "news story" based on the
+  # qualifies it as a "video" or "article" based on the link
   def get_links(star_page_elements)
     star_page_elements.css("li[class*='artist-section']").each do |link|
       if link.css("a")[0]["href"].include?('video')
@@ -75,5 +75,10 @@ class BeautifulBillboard::Star
     get_hot_hits
     get_hit_history(star_page_elements)
     get_links(star_page_elements)
+    @updated = true
+  end
+
+  def updated?
+    @updated
   end
 end

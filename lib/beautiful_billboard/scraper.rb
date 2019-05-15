@@ -1,20 +1,12 @@
 class BeautifulBillboard::Scraper
-  def self.get_elements(url)
-    Nokogiri::HTML(open(url))
-  end
-
-  def self.get_list_items(url)
-    self.get_elements(url).css(".chart-list-item")
-  end
-
   # creates an element array to pass to the Star class to instantiate each star
   def self.star_list
-    self.get_list_items('https://www.billboard.com/charts/artist-100')
+    Nokogiri::HTML(open('https://www.billboard.com/charts/artist-100')).css(".chart-list-item")
   end
 
   # creates an element array to pass to the Hit class to instantiate each hit
   def self.hit_list
-    self.get_list_items('https://www.billboard.com/charts/hot-100')
+    Nokogiri::HTML(open('https://www.billboard.com/charts/hot-100')).css(".chart-list-item")
   end
 
   # feeds star_list to the Star class to create stars for each list item
@@ -36,7 +28,8 @@ class BeautifulBillboard::Scraper
     self.create_stars_from_list
   end
 
+  # gets the elements of the star's page_link and then feeds that data to the star object instance to update its attributes
   def self.complete_star_details(star)
-    star.complete_details(self.get_elements("https://www.billboard.com#{star.page_link}"))
+    star.complete_details(Nokogiri::HTML(open("https://www.billboard.com#{star.page_link}")))
   end
 end

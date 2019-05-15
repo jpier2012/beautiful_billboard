@@ -4,5 +4,6 @@ source "https://rubygems.org"
 gemspec
 
 gem 'colorize'
+gem 'tty-table'
 gem 'nokogiri'
 gem 'pry'

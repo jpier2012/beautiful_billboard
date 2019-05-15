@@ -3,10 +3,7 @@ class BeautifulBillboard::Hit
 
   attr_accessor :rank, :title, :recorded_by, :last_week, :peak_position, :weeks_on_chart
 
-  def initialize(last_week = nil, peak_position = nil, weeks_on_chart = nil)
-    @last_week = last_week
-    @peak_position = peak_position
-    @weeks_on_chart = weeks_on_chart
+  def initialize
     @@all << self
   end
 
@@ -14,23 +11,22 @@ class BeautifulBillboard::Hit
     @@all
   end
 
+  # creates new Hit objects from the list generated through the scraper
   def self.new_from_hit_list(item)
-    # creates new Hit objects from the list generated through the scraper
-    hit = self.new.tap do |h|
+    self.new.tap do |h|
       h.rank = item["data-rank"]
       h.title = item["data-title"]
       h.recorded_by = item["data-artist"]
+
+      # same case as with Star class, these below are optional attributes, not every hit in the hot 100 list has these present
+      arr = item.css("[class*='last-week']")
+      !arr.empty? ? h.last_week = arr[0].text : h.last_week = nil
+
+      arr = item.css("[class*='weeks-at-one']")
+      !arr.empty? ? h.peak_position = arr[0].text : h.peak_position = nil
+
+      arr = item.css("[class*='weeks-on-chart']")
+      !arr.empty? ? h.weeks_on_chart = arr[0].text : h.weeks_on_chart = nil
     end
-
-    # these below are optional attributes, not every hit in the hot 100 list has these attributes present
-    check = item.css("[class*='last-week']")
-    !check.empty? ? hit.last_week = check[0].text : nil
-
-    check = item.css("[class*='weeks-at-one']")
-    !check.empty? ? hit.peak_position = check[0].text : nil
-
-    check = item.css("[class*='weeks-on-chart']")
-    !check.empty? ? hit.weeks_on_chart = check[0].text : nil
   end
-
 end
