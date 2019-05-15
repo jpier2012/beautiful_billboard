@@ -24,7 +24,9 @@ Or install it yourself as:
 
 ## Usage
 
-Type './bin/beautiful_billboard' into the terminal to run.
+Run 'bundle' from your terminal.
+
+Then type './bin/beautiful_billboard' into the terminal to run.
 
 Follow the prompts and have a great time!
 
