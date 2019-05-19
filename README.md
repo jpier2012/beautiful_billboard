@@ -10,19 +10,19 @@ Music has never looked better!
 
 1) Clone the github repository by entering the following commands into your IDE terminal:
 
-'git clone git@github.com:jpier2012/beautiful_billboard.git'
+```git clone git@github.com:jpier2012/beautiful_billboard.git```
 
 2) Change to the cloned Beautiful Billboard directory by entering:
 
-'cd beautiful_billboard'
+```cd beautiful_billboard```
 
 3) Type the following to install all required gems:
 
-'bundle'
+```bundle```
 
 4) Run the CLI:
 
-'./bin/beautiful_billboard'
+```./bin/beautiful_billboard```
 
 5) Enjoy!
 
