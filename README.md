@@ -8,27 +8,27 @@ Music has never looked better!
 
 ## Installation
 
-Add this line to your application's Gemfile:
+1) Clone the github repository by entering the following commands into your IDE terminal:
 
-```ruby
-gem 'beautiful_billboard'
-```
+'git clone git@github.come:jpier2012/beautiful_billboard.git'
 
-And then execute:
+2) Change to the cloned Beautiful Billboard directory by entering:
 
-    $ bundle
+'cd beautiful_billboard'
 
-Or install it yourself as:
+3) Type the following to install all required gems:
 
-    $ gem install beautiful_billboard
+'bundle'
+
+4) Run the CLI:
+
+'./bin/beautiful_billboard'
+
+5) Enjoy!
 
 ## Usage
 
-Run 'bundle' from your terminal.
-
-Then type './bin/beautiful_billboard' into the terminal to run.
-
-Follow the prompts and have a great time!
+After the intro, hit enter to continue. Follow the prompts from there!
 
 ## Development
 
