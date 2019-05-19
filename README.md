@@ -10,7 +10,7 @@ Music has never looked better!
 
 1) Clone the github repository by entering the following commands into your IDE terminal:
 
-'git clone git@github.come:jpier2012/beautiful_billboard.git'
+'git clone git@github.com:jpier2012/beautiful_billboard.git'
 
 2) Change to the cloned Beautiful Billboard directory by entering:
 
