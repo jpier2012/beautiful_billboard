@@ -127,8 +127,7 @@ class BeautifulBillboard::CLI
   def print_list(list)
     i = 1
     list.each do |line|
-      puts "  #{i}) #{line}"
-      puts "~".blue
+      puts "  #{i}) #{line}\n\n"
       i += 1
     end
   end
