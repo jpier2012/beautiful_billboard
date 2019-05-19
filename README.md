@@ -12,11 +12,11 @@ Music has never looked better!
 
 ```git clone git@github.com:jpier2012/beautiful_billboard.git```
 
-2) Change to the cloned Beautiful Billboard directory by entering:
+2) Change to the cloned Beautiful Billboard directory:
 
 ```cd beautiful_billboard```
 
-3) Type the following to install all required gems:
+3) Install all required gems:
 
 ```bundle```
 
