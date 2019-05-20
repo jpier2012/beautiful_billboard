@@ -103,23 +103,23 @@ class BeautifulBillboard::CLI
     # makes sure to only scrape each artist page once in case someone re-loads an artist detail
     BeautifulBillboard::Scraper.complete_star_details(s) unless s.updated?
     puts "----------------------------------------------------------------".blue.bold
-    puts "Rank:               #{s.rank}"
-    puts "Name:               #{s.name}"
-    puts "Page Link:          https://www.billboard.com#{s.page_link}"
-    puts "Last Week:          #{s.last_week}"
-    puts "Peak Position:      #{s.peak_position}"
-    puts "Weeks on Chart:     #{s.weeks_on_chart}"
+    puts "Name:".yellow.bold + "                 #{s.name}"
+    puts "Rank:".yellow.bold + "                 #{s.rank}"
+    puts "Page Link:".yellow.bold + "            https://www.billboard.com#{s.page_link}"
+    puts "Last Week:".yellow.bold + "            #{s.last_week}"
+    puts "Peak Position:".yellow.bold + "        #{s.peak_position}"
+    puts "Weeks on Chart:".yellow.bold + "       #{s.weeks_on_chart}"
     puts "----------------------------------------------------------------".blue.bold
-    puts "Hot Hits: #{s.hot_hits.count} total".yellow
+    puts "Hot Hits: #{s.hot_hits.count} total".yellow.bold
     puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
     print_list(s.hot_hits)
-    puts "Hit History: #{s.hit_history.count} total".yellow
+    puts "Hit History: #{s.hit_history.count} total".yellow.bold
     puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
     print_list(s.hit_history)
-    puts "Videos: #{s.videos.count} total".yellow
+    puts "Videos: #{s.videos.count} total".yellow.bold
     puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
     print_list(s.videos)
-    puts "Articles: #{s.articles.count} total".yellow
+    puts "Articles: #{s.articles.count} total".yellow.bold
     puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
     print_list(s.articles)
   end
@@ -127,8 +127,11 @@ class BeautifulBillboard::CLI
   def print_list(list)
     i = 1
     list.each do |line|
-      puts "  #{i}) #{line}\n\n"
-      i += 1
+      line.each do |k, v|
+        puts "  #{i}) #{k}"
+        puts "     #{v}\n".blue
+        i += 1
+      end
     end
   end
 end

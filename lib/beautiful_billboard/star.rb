@@ -46,16 +46,17 @@ class BeautifulBillboard::Star
   end
 
   # shows the hits currently on the hot 100 list
+  # stored as hashes instead of strings for formatting purposes in the detail display
   def get_hot_hits
     BeautifulBillboard::Hit.all.each do |h|
-      @hot_hits << "#{h.title} / Current Rank: #{h.rank}" if h.recorded_by.include?("#{self.name}")
+      @hot_hits << {"#{h.title}" => "Current Rank: #{h.rank}"} if h.recorded_by.include?("#{self.name}")
     end
   end
 
-  # pulls the list of past chart-topping hits from the artist detail page
+  # pulls the list of past chart-topping hits from the artist detail page\
   def get_hit_history(star_page_elements)
     star_page_elements.css(".artist-section--chart-history__title-list__title").each do |item|
-      @hit_history << "#{item["data-title"]} / #{item.css("[class*='peak-rank']")[0].text.strip}"
+      @hit_history << {"#{item["data-title"]}" => "#{item.css("[class*='peak-rank']")[0].text.strip}"}
     end
   end
 
@@ -63,10 +64,12 @@ class BeautifulBillboard::Star
   # qualifies it as a "video" or "article" based on the link
   def get_links(star_page_elements)
     star_page_elements.css("li[class*='artist-section']").each do |link|
-      if link.css("a")[0]["href"].include?('video')
-        @videos << "#{link.text.strip}\n#{link.css("a")[0]["href"].strip}"
-      elsif link.css("a")[0]["href"].include?('articles')
-        @articles << "#{link.text.strip}\n#{link.css("a")[0]["href"].strip}"
+      url = link.css("a")[0]["href"]
+
+      if url.include?('video')
+        @videos << {"#{link.text.strip}" => "#{url.strip}"}
+      elsif url.include?('articles')
+        @articles << {"#{link.text.strip}" => "#{url.strip}"}
       end
     end
   end
