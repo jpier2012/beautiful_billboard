@@ -19,7 +19,7 @@ class BeautifulBillboard::CLI
 
     i = 1
     until i == 16
-      40.times do puts "\n" end
+      40.times do puts "" end
       banner.each do |e|
         puts e.yellow if i.odd?
         puts e.yellow.swap if i.even?
