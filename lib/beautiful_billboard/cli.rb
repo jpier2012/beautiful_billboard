@@ -112,26 +112,26 @@ class BeautifulBillboard::CLI
     puts "----------------------------------------------------------------".blue.bold
     puts "Hot Hits: #{s.hot_hits.count} total".yellow.bold
     puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    print_list(s.hot_hits)
-    puts "Hit History: #{s.hit_history.count} total".yellow.bold
-    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    print_list(s.hit_history)
+
+    # I'm not associating the Hit and Star objects because the Hit objects can have multiple stars listed
+    BeautifulBillboard::Hit.all.select { |h| h.recorded_by.include?("#{s.name}")}.each_with_index do |h, i|
+      puts "  #{i + 1}) #{h.title}"
+      puts "     Current Rank: #{h.rank}\n".blue
+    end
+
+    # puts "Hit History: #{s.hit_history.count} total".yellow.bold
+    # puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
+    # print_list(s.hit_history)
+
     puts "Videos: #{s.videos.count} total".yellow.bold
     puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    print_list(s.videos)
-    puts "Articles: #{s.articles.count} total".yellow.bold
-    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    print_list(s.articles)
-  end
-
-  def print_list(list)
-    i = 1
-    list.each do |line|
-      line.each do |k, v|
-        puts "  #{i}) #{k}"
-        puts "     #{v}\n".blue
-        i += 1
-      end
+    BeautifulBillboard::Video.all.select { |v| v.star = self }.each_with_index do |h, i|
+      puts "  #{i + 1}) #{h.title}"
+      puts "     #{h.link}\n".blue
     end
+
+    # puts "Articles: #{s.articles.count} total".yellow.bold
+    # puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
+    # print_list(s.articles)
   end
 end

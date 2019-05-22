@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/beautiful_billboard.rb'
+require_relative '../lib/beautiful_billboard'
 
 BeautifulBillboard::CLI.new.call
