@@ -7,7 +7,12 @@ class BeautifulBillboard::CLI
   end
 
   def get_input
-    @input = gets.strip.to_i
+    @input = gets.strip
+    if /\D/.match(@input) || @input == "" || @input.to_i > 100
+      puts "Please enter a valid input!".red.bold
+      get_input
+    end
+    @input = @input.to_i
   end
 
   # just for fun
@@ -34,7 +39,7 @@ class BeautifulBillboard::CLI
     intro
     puts "~~~~~~~~~~ Your one-stop-shop for popular music! ~~~~~~~~~~~~~~".yellow
     puts "~~~~~~~~~~~ Press enter to see the top 20 stars ~~~~~~~~~~~~~~~".yellow
-    get_input
+    gets
 
     list_stars(@star_index)
     start_menu
@@ -62,28 +67,26 @@ class BeautifulBillboard::CLI
     when 2
       star_detail_menu
     else
-      puts "Sorry, I didn't catch that - ".red.bold
+      puts "That's not a valid menu option.".red.bold
       start_menu
     end
   end
 
   def star_detail_menu
     puts "================================================================".yellow.bold
-    puts "Please enter the number of the star you'd like to see.".blue.bold
+    puts "Please enter a number 1 - 100 for the star you'd like to see.".blue.bold
     puts "================================================================".yellow.bold
     get_input
 
     if @input == 0
       puts "Goodbye!".red.bold
       exit
-    elsif @input <= 0 || @input > 100
-      puts "It needs to be between 1 and 100!".red.bold
-      star_detail_menu
     end
 
     star_details(@input - 1)
     puts "Hit any key to return to the star list.".yellow
-    get_input
+    gets
+
     list_stars(@star_index)
     start_menu
   end
@@ -125,18 +128,18 @@ class BeautifulBillboard::CLI
       puts "     #{h.past_peak}\n".blue
     end
 
-    puts "Videos: #{s.get_videos.count} total".yellow.bold
-    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    s.get_videos.each_with_index do |v, i|
-      puts "  #{i + 1}) #{v.title}"
-      puts "     #{v.link}\n".blue
+    def puts_each(collection)
+      puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
+      collection.each_with_index do |e, i|
+        puts "  #{i + 1}) #{e.title}"
+        puts "     #{e.link}\n".blue
+      end
     end
 
-    puts "Articles: #{s.articles.count} total".yellow.bold
-    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    s.get_articles.each_with_index do |a, i|
-      puts "  #{i + 1}) #{a.title}"
-      puts "     #{a.link}\n".blue
-    end
+    puts "Videos: #{s.get_videos.count} total".yellow.bold
+    puts_each(s.get_videos)
+
+    puts "Articles: #{s.get_articles.count} total".yellow.bold
+    puts_each(s.get_articles)
   end
 end

@@ -4,7 +4,7 @@ class BeautifulBillboard::Video
   attr_accessor :title, :link, :star
 
   def initialize(item_hash)
-    item_hash.each { |k, v| self.send("#{k}=", "#{v}") }
+    item_hash.each { |k, v| self.send("#{k}=", v) }
     @@all << self
   end
 

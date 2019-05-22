@@ -4,7 +4,7 @@ class BeautifulBillboard::PastHit
   attr_accessor :title, :past_peak, :star
 
   def initialize(item_hash)
-    item_hash.each { |k, v| self.send("#{k}=", "#{v}") }
+    item_hash.each { |k, v| self.send("#{k}=", v) }
     @@all << self
   end
 

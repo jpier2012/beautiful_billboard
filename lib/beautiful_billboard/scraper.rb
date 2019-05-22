@@ -18,16 +18,16 @@ class BeautifulBillboard::Scraper
       }
 
       arr = item.css("[class*='title-text'] a")
-      !arr.empty? ? hash[:page_link] = arr[0]["href"] : nil
+      hash[:page_link] = arr[0]["href"] unless arr.empty?
 
       arr = item.css("[class*='last-week']")
-      !arr.empty? ? hash[:last_week] = arr[0].text : nil
+      hash[:last_week] = arr[0].text unless arr.empty?
 
       arr = item.css("[class*='weeks-at-one']")
-      !arr.empty? ? hash[:peak_position] = arr[0].text : nil
+      hash[:peak_position] = arr[0].text unless arr.empty?
 
       arr = item.css("[class*='weeks-on-chart']")
-      !arr.empty? ? hash[:weeks_on_chart] = arr[0].text : nil
+      hash[:weeks_on_chart] = arr[0].text unless arr.empty?
 
       BeautifulBillboard::Star.new(hash)
     end
@@ -84,13 +84,13 @@ class BeautifulBillboard::Scraper
       }
 
       arr = item.css("[class*='last-week']")
-      !arr.empty? ? hash[:last_week] = arr[0].text : nil
+      hash[:last_week] = arr[0].text unless arr.empty?
 
       arr = item.css("[class*='weeks-at-one']")
-      !arr.empty? ? hash[:peak_position] = arr[0].text : nil
+      hash[:peak_position] = arr[0].text unless arr.empty?
 
       arr = item.css("[class*='weeks-on-chart']")
-      !arr.empty? ? hash[:weeks_on_chart] = arr[0].text : nil
+      hash[:weeks_on_chart] = arr[0].text unless arr.empty?
 
       BeautifulBillboard::HotHit.new(hash)
     end
