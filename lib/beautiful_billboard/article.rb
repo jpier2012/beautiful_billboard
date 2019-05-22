@@ -3,7 +3,8 @@ class BeautifulBillboard::Article
 
   attr_accessor :title, :link, :star
 
-  def initialize
+  def initialize(item_hash)
+    item_hash.each { |k, v| self.send("#{k}=", "#{v}") }
     @@all << self
   end
 

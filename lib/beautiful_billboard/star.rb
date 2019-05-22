@@ -8,7 +8,7 @@ class BeautifulBillboard::Star
   def initialize(item_hash)
     item_hash.each { |k, v| self.send("#{k}=", "#{v}") }
     @hot_hits = []
-    @hit_history = []
+    @past_hits = []
     @articles = []
     @videos = []
     @updated = false
@@ -46,6 +46,25 @@ class BeautifulBillboard::Star
     # end
   #end
 
+  def get_hot_hits
+    @hot_hits = BeautifulBillboard::HotHit.all.select { |h| h.recorded_by.include?("#{@name}")}
+  end
+
+  def get_past_hits
+    @past_hits = BeautifulBillboard::PastHit.all.select do |h|
+      h.star == self
+
+      binding.pry
+    end
+  end
+
+  def get_videos
+    @videos = BeautifulBillboard::Video.all.select { |v| v.star == self }
+  end
+
+  def get_articles
+    @articles = BeautifulBillboard::Article.all.select { |a| a.star == self }
+  end
 
   def updated?
     @updated

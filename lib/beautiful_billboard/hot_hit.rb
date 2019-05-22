@@ -1,4 +1,4 @@
-class BeautifulBillboard::Hit
+class BeautifulBillboard::HotHit
   @@all = []
 
   attr_accessor :rank, :title, :recorded_by, :last_week, :peak_position, :weeks_on_chart

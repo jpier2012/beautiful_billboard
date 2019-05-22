@@ -110,28 +110,33 @@ class BeautifulBillboard::CLI
     puts "Peak Position:".yellow.bold + "        #{s.peak_position}"
     puts "Weeks on Chart:".yellow.bold + "       #{s.weeks_on_chart}"
     puts "----------------------------------------------------------------".blue.bold
-    puts "Hot Hits: #{s.hot_hits.count} total".yellow.bold
-    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
 
-    # I'm not associating the Hit and Star objects because the Hit objects can have multiple stars listed
-    BeautifulBillboard::Hit.all.select { |h| h.recorded_by.include?("#{s.name}")}.each_with_index do |h, i|
+    puts "Hot Hits: #{s.get_hot_hits.count} total".yellow.bold
+    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
+    s.get_hot_hits.each_with_index do |h, i|
       puts "  #{i + 1}) #{h.title}"
       puts "     Current Rank: #{h.rank}\n".blue
     end
 
-    # puts "Hit History: #{s.hit_history.count} total".yellow.bold
-    # puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    # print_list(s.hit_history)
-
-    puts "Videos: #{s.videos.count} total".yellow.bold
+    puts "Past Hits: #{s.get_past_hits.count} total".yellow.bold
     puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    BeautifulBillboard::Video.all.select { |v| v.star = self }.each_with_index do |h, i|
+    s.get_past_hits.each_with_index do |h, i|
       puts "  #{i + 1}) #{h.title}"
-      puts "     #{h.link}\n".blue
+      puts "     #{h.past_peak}\n".blue
     end
 
-    # puts "Articles: #{s.articles.count} total".yellow.bold
-    # puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
-    # print_list(s.articles)
+    puts "Videos: #{s.get_videos.count} total".yellow.bold
+    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
+    s.get_videos.each_with_index do |v, i|
+      puts "  #{i + 1}) #{v.title}"
+      puts "     #{v.link}\n".blue
+    end
+
+    puts "Articles: #{s.articles.count} total".yellow.bold
+    puts "~~~~~~~~~~~~~~~~~~~~~~".blue.bold
+    s.get_articles.each_with_index do |a, i|
+      puts "  #{i + 1}) #{a.title}"
+      puts "     #{a.link}\n".blue
+    end
   end
 end

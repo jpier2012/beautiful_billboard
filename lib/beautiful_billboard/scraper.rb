@@ -38,9 +38,13 @@ class BeautifulBillboard::Scraper
     Nokogiri::HTML(open("https://www.billboard.com#{star.page_link}"))
   end
 
-  def self.get_hit_history(star)
+  def self.create_past_hits(star)
     star_page_link(star).css(".artist-section--chart-history__title-list__title").each do |item|
-      star.hit_history << {"#{item["data-title"]}" => "#{item.css("[class*='peak-rank']")[0].text.strip}"}
+      BeautifulBillboard::PastHit.new({
+        title: item["data-title"],
+        past_peak: item.css("[class*='peak-rank']")[0].text.strip,
+        star: star
+      })
     end
   end
 
@@ -49,23 +53,23 @@ class BeautifulBillboard::Scraper
       url = link.css("a")[0]["href"]
 
       if url.include?('video')
-        BeautifulBillboard::Video.new.tap do |v|
-          v.title = link.text.strip
-          v.link = url.strip
-          v.star = star
-        end
+        BeautifulBillboard::Video.new({
+          title: link.text.strip,
+          link: url.strip,
+          star: star
+        })
       elsif url.include?('articles')
-        BeautifulBillboard::Article.new.tap do |a|
-          a.title = link.text.strip
-          a.link = url.strip
-          a.star = star
-        end
+        BeautifulBillboard::Article.new({
+          title: link.text.strip,
+          link: url.strip,
+          star: star
+          })
       end
     end
   end
 
   def self.complete_star_details(star)
-    get_hit_history(star)
+    create_past_hits(star)
     create_articles_and_videos(star)
     star.updated = true
   end
@@ -88,7 +92,7 @@ class BeautifulBillboard::Scraper
       arr = item.css("[class*='weeks-on-chart']")
       !arr.empty? ? hash[:weeks_on_chart] = arr[0].text : nil
 
-      BeautifulBillboard::Hit.new(hash)
+      BeautifulBillboard::HotHit.new(hash)
     end
   end
 
