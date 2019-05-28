@@ -3,7 +3,6 @@ class BeautifulBillboard::Star
 
   attr_accessor :rank, :name, :page_link, :last_week, :peak_position, :weeks_on_chart, :updated
 
-  # attribute default values are not necessary because I set them through new.tap in self.new_from_star_list
   def initialize(item_hash)
     item_hash.each { |k, v| self.send("#{k}=", v) }
     @updated = false
