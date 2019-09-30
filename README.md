@@ -1,10 +1,12 @@
 # BeautifulBillboard
 
-Welcome to the Beautiful Billboard CLI! This is my first project as a Flatiron school student.
+Welcome to the Beautiful Billboard CLI!
 
 This program pulls information from the Billboard Artist 100 list in the form of 'Star' objects  (https://www.billboard.com/charts/artist-100) and from the Hot 100 list in the form of 'Hit' objects  (https://www.billboard.com/charts/hot-100). You'll be able to see a list of stars in a compact, organized, and colorful format, with detailed information on each star available on demand. This includes a measure of how many hits each star has currently on the Hot 100 chart.
 
 Music has never looked better!
+
+This is my first project as a Flatiron school student.
 
 ## Installation
 
